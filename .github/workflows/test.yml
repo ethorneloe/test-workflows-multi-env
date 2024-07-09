@@ -1,0 +1,25 @@
+# Triggering conditions for the workflow
+on:
+  # Manual trigger with an input to specify the environment
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target Environment"
+        required: true
+        default: "dev"
+        type: environment
+
+jobs:
+  execute-job:
+    runs-on: [self-hosted, "ii-${{ github.event.inputs.environment }}"]
+    #if: (github.event.inputs.environment == 'prod' || github.event_name == 'schedule')
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run Script
+        run: |
+          write-output "${{ vars.TEST }}"
+        shell: pwsh
