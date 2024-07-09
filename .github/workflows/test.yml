@@ -11,9 +11,11 @@ on:
 
 jobs:
   execute-job:
-    runs-on: [self-hosted, "ii-${{ github.event.inputs.environment }}"]
+    env:
+      execution-environment: ${{ github.event_name == 'schedule' && 'prod' || github.event.inputs.environment }}
+    runs-on: [self-hosted, "ii-${{ env.execution-environment }}"]
     #if: (github.event.inputs.environment == 'prod' || github.event_name == 'schedule')
-    environment: ${{ github.event.inputs.environment }}
+    environment: ${{ env.execution-environment }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,5 +23,7 @@ jobs:
           fetch-depth: 0
       - name: Run Script
         run: |
+          write-output "Deploying to ${{ env.execution-environment }}"
           write-output "${{ vars.TEST }}"
+          
         shell: pwsh
