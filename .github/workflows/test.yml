@@ -8,6 +8,8 @@ on:
         required: true
         default: "dev"
         type: environment
+  schedule:
+    - cron: '*/15 * * * *'
 
 jobs:
   execute-job:
