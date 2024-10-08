@@ -14,9 +14,7 @@ on:
 jobs:
   execute-job:
     strategy:
-      matrix:
-        include: >-
-          ${{ fromJson(github.event_name == 'schedule' ? '[{"environment": "prod"}, {"environment": "test"}]' : '[{"environment": "' + (github.event.inputs.environment || 'test') + '"}]')}}
+      matrix: ${{ github.event_name == 'schedule' && [prod, test] || [github.event.inputs.environment] }}
     runs-on:
       - self-hosted
       - ii-${{ matrix.environment }}
