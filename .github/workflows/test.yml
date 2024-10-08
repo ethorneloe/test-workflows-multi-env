@@ -18,9 +18,7 @@ jobs:
       - ii-${{ matrix.environment }}
     strategy:
       matrix:
-        #environment: ${{ fromJson('["test"]') }}
         environment: ${{ fromJSON(github.event_name == 'schedule' && '["prod", "test"]' || format('["{0}"]',github.event.inputs.environment)) }}
-        
     environment: ${{ matrix.environment }}
     steps:
       - name: Debug Variables
