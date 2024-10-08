@@ -13,8 +13,17 @@ on:
 
 jobs:
   execute-job:
-    runs-on: [self-hosted, "ii-${{ github.event_name == 'schedule' && 'prod' || github.event.inputs.environment }}"]
-    environment: ${{ github.event_name == 'schedule' && 'prod' || github.event.inputs.environment }}
+    strategy:
+      matrix:
+        include: >-
+          ${{ fromJson(github.event_name == 'schedule'
+            ? '[{"environment": "prod"}, {"environment": "test"}]'
+            : '[{"environment": "' + (github.event.inputs.environment || 'test') + '"}]')
+          }}
+    runs-on:
+      - self-hosted
+      - ii-${{ matrix.environment }}
+    environment: ${{ matrix.environment }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,7 +31,6 @@ jobs:
           fetch-depth: 0
       - name: Run Script
         run: |
-          write-output "Deploying to ${{ github.event_name == 'schedule' && 'prod' || github.event.inputs.environment }}"
-          write-output "${{ vars.TEST }}"
-          
+          Write-Output "Deploying to ${{ matrix.environment }}"
+          Write-Output "${{ vars.TEST }}"
         shell: pwsh
