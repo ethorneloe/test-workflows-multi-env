@@ -16,10 +16,7 @@ jobs:
     strategy:
       matrix:
         include: >-
-          ${{ fromJson(github.event_name == 'schedule'
-            ? '[{"environment": "prod"}, {"environment": "test"}]'
-            : '[{"environment": "' + (github.event.inputs.environment || 'test') + '"}]')
-          }}
+          ${{ fromJson(github.event_name == 'schedule' ? '[{"environment": "prod"}, {"environment": "test"}]' : '[{"environment": "' + (github.event.inputs.environment || 'test') + '"}]')}}
     runs-on:
       - self-hosted
       - ii-${{ matrix.environment }}
