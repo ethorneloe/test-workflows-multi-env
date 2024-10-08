@@ -18,7 +18,7 @@ jobs:
       - ii-${{ matrix.environment }}
     strategy:
       matrix:
-        environment: ${{ fromJson("{\"environment\":\"test\"}") }}
+        environment: ${{ fromJson("['test']") }}
     environment: ${{ matrix.environment }}
     steps:
       - name: Debug Variables
